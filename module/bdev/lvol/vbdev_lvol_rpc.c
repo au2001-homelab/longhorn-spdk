@@ -2084,8 +2084,6 @@ rpc_bdev_lvol_register_snapshot_checksum(struct spdk_jsonrpc_request *request,
 	struct spdk_lvol *lvol;
 	struct rpc_snapshot_checksum_status *checksum_status;
 
-	SPDK_INFOLOG(lvol_rpc, "Registering snapshot checksum\n");
-
 	if (spdk_json_decode_object(params, rpc_bdev_snapshot_checksum_decoders,
 				    SPDK_COUNTOF(rpc_bdev_snapshot_checksum_decoders),
 				    &req)) {
@@ -2094,6 +2092,8 @@ rpc_bdev_lvol_register_snapshot_checksum(struct spdk_jsonrpc_request *request,
 						 "spdk_json_decode_object failed");
 		goto cleanup;
 	}
+
+	SPDK_INFOLOG(lvol_rpc, "Registering snapshot checksum for '%s'\n", req.name);
 
 	bdev = spdk_bdev_get_by_name(req.name);
 	if (bdev == NULL) {
@@ -2132,7 +2132,6 @@ rpc_bdev_lvol_register_snapshot_checksum(struct spdk_jsonrpc_request *request,
 	LIST_INSERT_HEAD(&g_snapshot_checksum_status_list, checksum_status, link);
 	spdk_lvol_register_snapshot_checksum(lvol, rpc_bdev_lvol_register_snapshot_checksum_status_cb,
 					     checksum_status, rpc_bdev_lvol_register_snapshot_checksum_cb, ctx);
-
 cleanup:
 	free_rpc_bdev_snapshot_checksum(&req);
 }
