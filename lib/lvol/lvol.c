@@ -958,7 +958,7 @@ spdk_lvs_unload(struct spdk_lvol_store *lvs, spdk_lvs_op_complete cb_fn,
 
 	TAILQ_FOREACH_SAFE(lvol, &lvs->lvols, link, tmp) {
 		if (lvol->action_in_progress == true) {
-			SPDK_ERRLOG("Cannot unload lvol store - operations on lvols pending\n");
+			SPDK_ERRLOG("Cannot unload lvol store - operations on lvol %s pending\n", lvol->name);
 			cb_fn(cb_arg, -EBUSY);
 			return -EBUSY;
 		} else if (lvol->ref_count != 0) {
